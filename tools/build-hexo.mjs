@@ -1,14 +1,14 @@
 import { spawnSync } from "node:child_process";
 import { execPath } from "node:process";
 
-const isCloudflarePages = process.env.CF_PAGES === "1";
+const isGitHubPages = process.argv.includes("--github-pages");
 const args = ["generate"];
 
-if (isCloudflarePages) {
-  args.push("--config", "_config.yml,_config.cloudflare.yml");
-  console.log("Building for Cloudflare Pages with root path '/'.");
-} else {
+if (isGitHubPages) {
   console.log("Building for GitHub Pages with root path '/ZzBlog/'.");
+} else {
+  args.push("--config", "_config.yml,_config.cloudflare.yml");
+  console.log("Building for Cloudflare with root path '/'.");
 }
 
 const result = spawnSync(execPath, ["node_modules/hexo/bin/hexo", ...args], { stdio: "inherit" });
