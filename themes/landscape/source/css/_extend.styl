@@ -1,0 +1,122 @@
+$block-caption
+  text-decoration: none
+  text-transform: uppercase
+  letter-spacing: 2px
+  color: color-grey
+  margin-bottom: 1em
+  margin-left: 5px
+  line-height: 1em
+  text-shadow: 0 1px #fff
+  font-weight: bold
+
+$block
+  background: #fff
+  box-shadow: 1px 2px 3px #ddd
+  border: 1px solid color-border
+  border-radius: 3px
+
+$base-style
+  h1
+    font-size: 2em
+  h2
+    font-size: 1.5em
+  h3
+    font-size: 1.3em
+  h4
+    font-size: 1.2em
+  h5
+    font-size: 1em
+  h6
+    font-size: 1em
+    color: color-grey
+  hr
+    border: 1px dashed color-border
+  strong
+    font-weight: bold
+  em, cite
+    font-style: italic
+  sup, sub
+    font-size: 0.75em
+    line-height: 0
+    position: relative
+    vertical-align: baseline
+  sup
+    top: -0.5em
+  sub
+    bottom: -0.2em
+  small
+    font-size: 0.85em
+  acronym, abbr
+    border-bottom: 1px dotted
+  ul, ol, dl
+    margin: 0 20px
+    line-height: line-height
+  ul, ol
+    ul, ol
+      margin-top: 0
+      margin-bottom: 0
+  ul
+    list-style: disc
+  ol
+    list-style: decimal
+    dt
+      font-weight: bold
+
+// ZzBlog refinements: calm reading width, Chinese typography and a softer palette.
+body
+  background: #f5f7fb
+  color: #344054
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif
+
+#header
+  background: linear-gradient(135deg, #243b68 0%, #315d87 100%)
+  box-shadow: 0 8px 24px rgba(36, 59, 104, .16)
+  .subtitle
+    color: rgba(255,255,255,.78)
+
+#main
+  article.post, article.page
+    background: #fff
+    border: 1px solid #e8edf5
+    border-radius: 12px
+    box-shadow: 0 10px 30px rgba(34, 54, 86, .06)
+    padding: 28px 34px
+    margin-bottom: 28px
+  .entry-title
+    color: #243b68
+    font-weight: 700
+    a
+      color: #243b68
+  .entry-content
+    color: #475467
+    font-size: 16px
+    line-height: 2
+    h2, h3
+      color: #243b68
+      border-left: 4px solid #5b8def
+      padding-left: 12px
+      margin-top: 28px
+    a
+      color: #3978c8
+    blockquote
+      border-left-color: #8eb5ed
+      background: #f5f8fd
+      color: #667085
+      border-radius: 0 8px 8px 0
+
+#sidebar .widget
+  background: #fff
+  border: 1px solid #e8edf5
+  border-radius: 10px
+  box-shadow: 0 8px 20px rgba(34, 54, 86, .05)
+
+#footer
+  color: #98a2b3
+  a
+    color: #3978c8
+
+@media mq-mobile
+  #main article.post, #main article.page
+    padding: 20px
+  #main .entry-content
+    font-size: 15px
