@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "hexo generate",
-    "build:cloudflare": "hexo clean && hexo generate --config _config.yml,_config.cloudflare.yml",
+    "build": "node tools/build-hexo.mjs",
+    "build:cloudflare": "node tools/build-hexo.mjs",
     "clean": "hexo clean",
     "deploy": "hexo deploy",
     "server": "hexo server"
