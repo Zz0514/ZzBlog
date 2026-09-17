@@ -29,3 +29,7 @@ jobs:
           git add source/_posts
           git commit -m "发布 Notion 博客文章"
           git push
+      - name: Mark committed posts as published in Notion
+        env:
+          NOTION_MARK_PUBLISHED: "true"
+        run: node tools/sync-notion-posts.mjs

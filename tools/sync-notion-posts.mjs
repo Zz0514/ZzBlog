@@ -1,8 +1,9 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { access, mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const token = process.env.NOTION_TOKEN;
 const databaseId = process.env.NOTION_DATABASE_ID;
+const markPublished = process.env.NOTION_MARK_PUBLISHED === "true";
 const names = {
   publish: process.env.NOTION_PUBLISH_PROPERTY || "发布到博客",
   title: process.env.NOTION_TITLE_PROPERTY || "名称",
@@ -71,7 +72,18 @@ for (const page of queue.results) {
   if (!title) throw new Error(`Page ${page.id} is missing the ${names.title} title.`);
   const filename = `${date.slice(0, 10)}-${title.replace(/[\\/:*?"<>|]/g, "-")}.md`;
   const frontMatter = ["---", `title: ${title}`, `date: ${date.length === 10 ? `${date} 12:00:00` : date}`, `tags:${yamlList(values(properties[names.tags]))}`, `categories:${yamlList(values(properties[names.category]))}`, "---", ""].join("\n");
-  await writeFile(resolve("source/_posts", filename), `${frontMatter}\n${await children(page.id)}\n`, "utf8");
-  await notion(`/pages/${page.id}`, { method: "PATCH", body: JSON.stringify({ properties: { [names.publish]: { checkbox: false } } }) });
+  const outputPath = resolve("source/_posts", filename);
+  if (markPublished) {
+    try {
+      await access(outputPath);
+    } catch {
+      console.log(`Waiting for ${filename} to be committed.`);
+      continue;
+    }
+    await notion(`/pages/${page.id}`, { method: "PATCH", body: JSON.stringify({ properties: { [names.publish]: { checkbox: false } } }) });
+    console.log(`Marked published: ${filename}`);
+    continue;
+  }
+  await writeFile(outputPath, `${frontMatter}\n${await children(page.id)}\n`, "utf8");
   console.log(`Synced: ${filename}`);
 }
