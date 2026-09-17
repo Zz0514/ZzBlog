@@ -22,14 +22,24 @@ jobs:
       - name: Import queued Notion posts
         run: node tools/sync-notion-posts.mjs
       - name: Commit imported posts
+        id: commit_posts
         run: |
           git add source/_posts
-          if git diff --cached --quiet; then exit 0; fi
+          if git diff --cached --quiet; then
+            echo "published=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "发布 Notion 博客文章"
           git push
+          echo "published=true" >> "$GITHUB_OUTPUT"
       - name: Mark committed posts as published in Notion
         env:
           NOTION_MARK_PUBLISHED: "true"
         run: node tools/sync-notion-posts.mjs
+      - name: Trigger Cloudflare deployment
+        if: steps.commit_posts.outputs.published == 'true' && secrets.CLOUDFLARE_DEPLOY_HOOK != ''
+        env:
+          CLOUDFLARE_DEPLOY_HOOK: ${{ secrets.CLOUDFLARE_DEPLOY_HOOK }}
+        run: curl --fail --silent --show-error --request POST "$CLOUDFLARE_DEPLOY_HOOK"
