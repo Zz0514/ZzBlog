@@ -59,7 +59,10 @@ async function children(pageId) {
 const database = await notion(`/databases/${databaseId}`);
 const dataSourceId = database.data_sources?.[0]?.id;
 if (!dataSourceId) throw new Error("No data source was found in NOTION_DATABASE_ID.");
-const queue = await notion(`/data_sources/${dataSourceId}/query`, { method: "POST", body: JSON.stringify({ filter: { property: names.publish, checkbox: { equals: true } }, page_size: 100 }) });
+const dataSource = await notion(`/data_sources/${dataSourceId}`);
+const publishProperty = dataSource.properties?.[names.publish]?.id || names.publish;
+const queue = await notion(`/data_sources/${dataSourceId}/query`, { method: "POST", body: JSON.stringify({ filter: { property: publishProperty, checkbox: { equals: true } }, page_size: 100 }) });
+console.log(`Found ${queue.results.length} post(s) marked ${names.publish}.`);
 await mkdir(resolve("source/_posts"), { recursive: true });
 for (const page of queue.results) {
   const properties = page.properties;
