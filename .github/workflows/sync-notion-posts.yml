@@ -11,9 +11,10 @@ permissions:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    env:
-      NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-      NOTION_DATABASE_ID: ${{ vars.NOTION_DATABASE_ID }}
+      env:
+        NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        NOTION_DATABASE_ID: ${{ vars.NOTION_DATABASE_ID }}
+        CLOUDFLARE_DEPLOY_HOOK: ${{ secrets.CLOUDFLARE_DEPLOY_HOOK }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -39,7 +40,5 @@ jobs:
           NOTION_MARK_PUBLISHED: "true"
         run: node tools/sync-notion-posts.mjs
       - name: Trigger Cloudflare deployment
-        if: steps.commit_posts.outputs.published == 'true' && secrets.CLOUDFLARE_DEPLOY_HOOK != ''
-        env:
-          CLOUDFLARE_DEPLOY_HOOK: ${{ secrets.CLOUDFLARE_DEPLOY_HOOK }}
+        if: steps.commit_posts.outputs.published == 'true' && env.CLOUDFLARE_DEPLOY_HOOK != ''
         run: curl --fail --silent --show-error --request POST "$CLOUDFLARE_DEPLOY_HOOK"
