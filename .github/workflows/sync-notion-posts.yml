@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: "17 * * * *"
   workflow_dispatch:
+    inputs:
+      force_cloudflare_deploy:
+        description: Trigger a Cloudflare build even when no new post was imported
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -40,5 +46,5 @@ jobs:
           NOTION_MARK_PUBLISHED: "true"
         run: node tools/sync-notion-posts.mjs
       - name: Trigger Cloudflare deployment
-        if: steps.commit_posts.outputs.published == 'true' && env.CLOUDFLARE_DEPLOY_HOOK != ''
+        if: (steps.commit_posts.outputs.published == 'true' || inputs.force_cloudflare_deploy) && env.CLOUDFLARE_DEPLOY_HOOK != ''
         run: curl --fail --silent --show-error --request POST "$CLOUDFLARE_DEPLOY_HOOK"
